@@ -1,5 +1,6 @@
 # Nomis
 This is a clone of the game "Simon", a popular toy in the 70's and 80's. Made entirely in Unity.
+Made very quickly as a proof of concept, I should probably go back and make it better but I didn't fix it then so I will leave it.
 
 Known Bugs:
   1. When you hit P if it's already playing back, it will repeat playback.
