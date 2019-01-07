@@ -11,6 +11,7 @@ public class MainDriver : MonoBehaviour {
 	int num; // Random Number used to generate the next color
 	float time; // Time interval between colors. Default is half second.
 	public Text score, message;
+	private bool playingBack; // Is the color pattern currently being played back?
 
 	AudioSource green, red, yellow, blue, winsound, losesound; // Various sounds
 	public Light green1, green2, green3, red1, red2, red3, yellow1, yellow2, yellow3, blue1, blue2, blue3; // All the lights.
@@ -50,8 +51,10 @@ public class MainDriver : MonoBehaviour {
 				Invoke ("Win", time);
 			}
 		} 
-		else if (Input.GetKeyDown (KeyCode.P))
-			StartCoroutine (PlayGame ());
+		else if (Input.GetKeyDown (KeyCode.P)) {
+			if (!playingBack)
+				StartCoroutine (PlayGame ());
+		}
 
 		else if (Input.GetKeyDown (KeyCode.Q)) {
 			SceneManager.LoadScene ("Simon");
@@ -112,6 +115,9 @@ public class MainDriver : MonoBehaviour {
 
 	// Runs the game
 	IEnumerator PlayGame() {
+
+		playingBack = true;
+
 		for (int i = 0; i < sequence.Count; i++) {
 			print (sequence [i].ToString()); // Debug
 			if (sequence [i].ToString () == "Red")
@@ -124,6 +130,8 @@ public class MainDriver : MonoBehaviour {
 				Green ();
 			yield return new WaitForSeconds (1.5f * time);
 		}
+
+		playingBack = false;
 	} 
 
 	//Sets the Score Text as needed
