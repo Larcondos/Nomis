@@ -20,6 +20,7 @@ public class MainDriver : MonoBehaviour {
 	private List <KeyCode> correct; // The sequence that correlates to what order the keys need to be pressed in.
 	private int correctIndex; // The index counter for what order keys are pressed in.
 
+
 	// Use this for initialization
 	void Start () {
 		correct = def;
@@ -41,33 +42,48 @@ public class MainDriver : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		print (playingBack);
+
 		setTime ();
-		if (correct.Count != 0)
-		if (Input.GetKeyDown (correct [correctIndex])) {
-			if (++correctIndex == correct.Count) {
+
+		if (!playingBack) {
+			if (Input.GetKeyDown (correct [correctIndex])) {
+				if (++correctIndex == correct.Count) {
+					correctIndex = 0;
+					print ("Correct!");
+					//Correct - do whatever is next
+					Invoke ("Win", time);
+				}
+				if (Input.GetKeyDown (KeyCode.LeftArrow))
+					Yellow ();
+				if (Input.GetKeyDown (KeyCode.RightArrow))
+					Red ();
+				if (Input.GetKeyDown (KeyCode.UpArrow))
+					Green ();
+				if (Input.GetKeyDown (KeyCode.DownArrow))
+					Blue ();
+			
+			} else if (Input.GetKeyDown (KeyCode.P)) {
+				if (!playingBack)
+					StartCoroutine (PlayGame ());
+			} else if (Input.GetKeyDown (KeyCode.Q)) {
+				SceneManager.LoadScene ("Simon");
+			} else if (Input.GetKeyDown (KeyCode.Escape))
+				Application.Quit ();
+			else if (Input.anyKeyDown) {
 				correctIndex = 0;
-				print ("Correct!");
-				//Correct - do whatever is next
-				Invoke ("Win", time);
+				print ("Wrong!");
+				//The user is wrong - game over.
+				Invoke ("Lose", time);
+				if (Input.GetKeyDown (KeyCode.LeftArrow))
+					Yellow ();
+				if (Input.GetKeyDown (KeyCode.RightArrow))
+					Red ();
+				if (Input.GetKeyDown (KeyCode.UpArrow))
+					Green ();
+				if (Input.GetKeyDown (KeyCode.DownArrow))
+					Blue ();
 			}
-		} 
-		else if (Input.GetKeyDown (KeyCode.P)) {
-			if (!playingBack)
-				StartCoroutine (PlayGame ());
-		}
-
-		else if (Input.GetKeyDown (KeyCode.Q)) {
-			SceneManager.LoadScene ("Simon");
-		}
-
-		else if (Input.GetKeyDown (KeyCode.Escape))
-			Application.Quit ();
-
-		else if (Input.anyKeyDown) {
-			correctIndex = 0;
-			print ("Wrong!");
-			//The user is wrong - game over.
-			Invoke ("Lose", time);
 		}
 
 
@@ -104,13 +120,15 @@ public class MainDriver : MonoBehaviour {
 		message.text = "Correct!";
 		TextUpdate ();
 		Invoke ("GenerateColor", time);
+
+		playingBack = true;
 	}
 
 	// What happens when you lose
 	void Lose() {
 		losesound.Play ();
 		message.text = "Wrong!";
-		TextUpdate ();
+		//TextUpdate ();
 	}
 
 	// Runs the game
